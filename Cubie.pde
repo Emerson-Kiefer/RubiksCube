@@ -25,8 +25,53 @@ class Cubie{
     colors[4] = yellow;
     colors[5] = white;
   }
-  void xRotate(){
-    
+  
+  void rotateFaces(char rotation, boolean clockwise){
+    color buffer;
+    switch(rotation){
+      case 'x':
+        buffer = colors[0];
+        if(clockwise){
+          colors[0] = colors[4];
+          colors[4] = colors[1];
+          colors[1] = colors[5];
+          colors[5] = buffer;
+        } else{
+          colors[0] = colors[5];
+          colors[5] = colors[1];
+          colors[1] = colors[4];
+          colors[4] = buffer;
+        }
+        break;
+      case 'y':
+        buffer = colors[0];
+        if(!clockwise){
+          colors[0] = colors[2];
+          colors[2] = colors[1];
+          colors[1] = colors[3];
+          colors[3] = buffer;
+        } else{
+          colors[0] = colors[3];
+          colors[3] = colors[1];
+          colors[1] = colors[2];
+          colors[2] = buffer;
+        }
+        break;
+      case 'z':
+        buffer = colors[2];
+        if(clockwise){
+          colors[2] = colors[5];
+          colors[5] = colors[3];
+          colors[3] = colors[4];
+          colors[4] = buffer;
+        } else {
+          colors[2] = colors[4];
+          colors[4] = colors[3];
+          colors[3] = colors[5];
+          colors[5] = buffer;
+        }
+        break;
+    }
   }
   
   void show(){
