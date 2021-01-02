@@ -45,7 +45,7 @@ class Cubie{
         break;
       case 'y':
         buffer = colors[0];
-        if(!clockwise){
+        if(clockwise){
           colors[0] = colors[2];
           colors[2] = colors[1];
           colors[1] = colors[3];
@@ -109,7 +109,7 @@ class Cubie{
     endShape(CLOSE);
     
     fill(colors[4]);
-    beginShape(); //right
+    beginShape(); //up
     vertex(x, y, z);
     vertex(x + len, y, z);
     vertex(x + len, y, z + len);
@@ -117,7 +117,7 @@ class Cubie{
     endShape(CLOSE);
     
     fill(colors[5]);
-    beginShape(); //right
+    beginShape(); //down
     vertex(x, y + len, z);
     vertex(x + len, y + len, z);
     vertex(x + len, y + len, z + len);
