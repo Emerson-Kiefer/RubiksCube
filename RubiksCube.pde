@@ -4,6 +4,10 @@ int dim = 3;
 Cubie[][][] cube = new Cubie[dim][dim][dim];
 float len = 50;
 
+int iterator = 0;
+boolean reverse = false;
+boolean run = false;
+
 void setup(){
   size(600, 600, P3D);
   cam = new PeasyCam(this, 400);
@@ -17,7 +21,19 @@ void setup(){
 
 }
 
-void keyPressed(){
+void keyPressed(){ //clockwise and counterclockwise are opposite for L and R, U and D, F and B, currently clockise is for L, D, F
+  if(key == ' '){
+    run = !run;
+    if(reverse == true && iterator == -1){
+      iterator = 0;
+      reverse = false;
+    }
+  }
+
+  rotateCube(key);
+}
+
+void rotateCube(char key){
   char rotation = ' ';
   char lowercaseKey = key;
   boolean clockwise = true;
@@ -67,76 +83,49 @@ void keyPressed(){
   }
 }
 
+
+
 void rotateCubies(char rotation, int val, boolean clockwise){ //temporary hard coding
-  //////////////////////////////////////////
   //Cubie1, Cubie2, Cubie3, Cubie4, Cubie5, Cubie6, Cubie7, Cubie8, buffer1, buffer2
   Cubie[] cubieArr1 = {};
   Cubie[] cubieArr2 = {};
   color[] buffer1 = null;
   color[] buffer2 = null;
-  //////////////////////////////////////////
-  
-  if(rotation == ' '){
-  
+  if(rotation != 'z' && rotation != 'y' && rotation != 'x'){
     return;
   }
   if(rotation == 'z'){
-    
-    ///////////////////////////////////////////
     buffer1 = cube[0][0][val].colors;
     buffer2 = cube[1][0][val].colors;
     cubieArr1 = new Cubie[]{cube[0][0][val], cube[0][2][val], cube[2][2][val], cube[2][0][val], cube[0][0][val]};
     cubieArr2 = new Cubie[]{cube[1][0][val], cube[0][1][val], cube[1][2][val], cube[2][1][val], cube[1][0][val]};
-    //////////////////////////////////////////
-    
   } else if(rotation == 'x'){
     buffer1 = cube[val][0][0].colors;
     buffer2 = cube[val][1][0].colors;
     cubieArr1 = new Cubie[]{cube[val][0][0], cube[val][2][0], cube[val][2][2], cube[val][0][2], cube[val][0][0]};
     cubieArr2 = new Cubie[]{cube[val][1][0], cube[val][2][1], cube[val][1][2], cube[val][0][1],  cube[val][1][0]};
-    
-    //color[] colBuf1 = cube[val][0][0].colors;            //counter
-    //color[] colBuf2 = cube[val][1][0].colors;
-  
-    //cube[val][0][0].colors = cube[val][0][2].colors;
-    //cube[val][0][2].colors = cube[val][2][2].colors;
-    //cube[val][2][2].colors = cube[val][2][0].colors;
-    //cube[val][2][0].colors = colBuf1;
-    
-    //cube[val][1][0].colors = cube[val][0][1].colors;
-    //cube[val][0][1].colors = cube[val][1][2].colors;
-    //cube[val][1][2].colors = cube[val][2][1].colors;
-    //cube[val][2][1].colors = colBuf2;
-    
-    
   } else if(rotation == 'y'){
     buffer1 = cube[0][val][0].colors;
     buffer2 = cube[1][val][0].colors;
-    cubieArr1 = new Cubie[]{cube[0][val][0], cube[2][val][0], cube[2][val][2], cube[0][val][2], cube[0][val][0]};
-    cubieArr2 = new Cubie[]{cube[1][val][0], cube[2][val][1], cube[1][val][2], cube[0][val][1],  cube[1][val][0]};
-    
-    
+    cubieArr1 = new Cubie[]{cube[0][val][0], cube[0][val][2], cube[2][val][2], cube[2][val][0], cube[0][val][0]}; //clock
+    cubieArr2 = new Cubie[]{cube[1][val][0], cube[0][val][1], cube[1][val][2], cube[2][val][1], cube[1][val][0]};
   }
-  ///////////////////////////////////
-  for(int i = 0; i < 3; i++){
-    if(clockwise){
-      cubieArr1[i].colors = cubieArr1[i + 1].colors;
-      cubieArr2[i].colors = cubieArr2[i + 1].colors;
-    } else {
-      cubieArr1[4 - i] = cubieArr1[3 - i];
-      cubieArr2[4 - i] = cubieArr2[3 - i];
+  int loops = clockwise ? 1 : 3;  //triple looping for counter clockwise won't work with animation (probably)
+  for(int j = 0; j <  loops; j++){
+    for(int i = 0; i < 3; i++){
+      //if(clockwise){
+        cubieArr1[i].colors = cubieArr1[i + 1].colors;
+        cubieArr2[i].colors = cubieArr2[i + 1].colors;
     }
-  }
-  if(clockwise){
     cubieArr1[3].colors = buffer1;
     cubieArr2[3].colors = buffer2;
-  } else{
-    cubieArr1[1].colors = buffer1;
-    cubieArr2[1].colors = buffer2;
+    buffer1 = cubieArr1[0].colors;
+    buffer2 = cubieArr2[0].colors;
   }
-  
-  ///////////////////////////////////
-  
+}
+
+char switchCase(char letter){
+  return (int)letter < 97 ? (char)((int)letter + 32) : (char)((int)letter - 32);
 }
 
 
@@ -148,15 +137,36 @@ void draw(){
   for(int i = 0; i< 3; i++){
     for(int j = 0; j < 3; j++){
       for(int k = 0; k < 3; k++){
-        text("(" + i +","+ j +","+ k + ")", len * i - 1.5 * len, len * j - 1.5 * len, len * k - 1.5 * len);
+        //text("(" + i +","+ j +","+ k + ")", len * i - 1.5 * len, len * j - 1.5 * len, len * k - 1.5 * len);
         cube[i][j][k].show();
       }
     }
   }
-  
   fill(255);
   box(len);
   fill(255);
+  
+  if(run){
+    char[] tempMixArr = {'f', 'b', 'l', 'u', 'r', 'u', 'd', 'R', 'F', 'l', 'u', 'r', 'u', 'l', 'r', 'B', 'U'};
+    
+    if(!reverse){
+      if(frameCount % 12 == 0 && iterator < tempMixArr.length){
+        rotateCube(tempMixArr[iterator]);
+        iterator++;
+      }
+      if(iterator == tempMixArr.length){
+        iterator--;
+        reverse = true;
+      }
+    }
+    if(reverse){
+      if(frameCount % 12 == 0 && iterator > -1){
+        rotateCube(switchCase(tempMixArr[iterator]));
+        iterator--;
+      }
+      
+    }
+  }
   
   
 }
