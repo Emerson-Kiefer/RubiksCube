@@ -44,17 +44,18 @@ class Cubie{
         }
         break;
       case 'y':
-        buffer = colors[0];
+        buffer = colors[0]; ////
         if(clockwise){
-          colors[0] = colors[2];
-          colors[2] = colors[1];
-          colors[1] = colors[3];
-          colors[3] = buffer;
-        } else{
           colors[0] = colors[3];
           colors[3] = colors[1];
           colors[1] = colors[2];
           colors[2] = buffer;
+        
+        } else{
+          colors[0] = colors[2];
+          colors[2] = colors[1];
+          colors[1] = colors[3];
+          colors[3] = buffer;
         }
         break;
       case 'z':
